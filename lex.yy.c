@@ -447,7 +447,7 @@ char *yytext;
 5. Exponentiation (^)
 */
 #line 11 "tiny_calc.l"
-    
+
 #line 451 "lex.yy.c"
 #line 452 "lex.yy.c"
 
@@ -1741,6 +1741,6 @@ void yyfree (void * ptr )
 
 int yywrap() { return 1; }
 
-int main() {
+int main(int argv, char *argc[]) {
     yylex();
 }
