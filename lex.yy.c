@@ -438,18 +438,57 @@ int yy_flex_debug = 0;
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
 #line 1 "tiny_calc.l"
-/*
-(f)lex program for a basic calculator support five artimetic operations:
-1. Addition (+)
-2. Subtraction (-)
-3. Multiplication (*)
-4. Division (/)
-5. Exponentiation (^)
-*/
-#line 11 "tiny_calc.l"
+#line 2 "tiny_calc.l"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
 
-#line 451 "lex.yy.c"
-#line 452 "lex.yy.c"
+/*
+state 0: expects op1
+1: expects op
+2: expects op2
+*/
+
+double op1 = 0.0;
+double op2 = 0.0;
+char op = '\0';
+int state = 0;
+int error = 0;
+char error_msg[100] = "";
+
+void reset() {
+    op1 = 0.0;
+    op2 = 0.0;
+    op = '\0';
+    state = 0;
+    error = 0;
+    error_msg[0] = '\0';
+}
+
+void calculate() {
+    if (state != 3) {
+        printf("Error: in the expression\n");
+        return;
+    }
+
+    printf(" = ");
+    switch(op) {
+        case '+': printf("%2f\n", op1 + op2); break;
+        case '-': printf("%2f\n", op1 - op2); break;
+        case '*': printf("%2f\n", op1 * op2); break;
+        case '/':
+            // check for division by zero
+            if(op2 == 0) {
+                printf("Error: division by zero\n");
+            } else {
+                printf("%2f\n", op1 / op2);
+            }
+        case '^': printf("%2f\n", pow(op1, op2)); break;
+    }
+}
+#line 490 "lex.yy.c"
+#line 491 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -666,10 +705,10 @@ YY_DECL
 		}
 
 	{
-#line 21 "tiny_calc.l"
+#line 64 "tiny_calc.l"
 
 
-#line 672 "lex.yy.c"
+#line 711 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -728,10 +767,10 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 23 "tiny_calc.l"
+#line 66 "tiny_calc.l"
 ECHO;
 	YY_BREAK
-#line 734 "lex.yy.c"
+#line 773 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1736,7 +1775,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 23 "tiny_calc.l"
+#line 66 "tiny_calc.l"
 
 
 int yywrap() { return 1; }
