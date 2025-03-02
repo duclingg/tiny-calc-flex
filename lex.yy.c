@@ -455,26 +455,29 @@ char *yytext;
 state 0: expects op1
 1: expects op
 2: expects op2
-3: 
+3: expects state 2
 */
 
 double op1 = 0.0;
 double op2 = 0.0;
 char op = '\0';
 int state = 0;
-int error = 0;
+bool error = false;
 
+// resets varaibles after calulation or error
 void reset() {
     op1 = 0.0;
     op2 = 0.0;
     op = '\0';
     state = 0;
-    error = 0;
+    error = false;
 }
 
+// basic operations
 void calculate() {
     if (state != 3) {
-        printf(" - Error: in the expression\n");
+        printf(" - ERROR in the expression\n");
+        error = true;
         return;
     }
 
@@ -486,15 +489,18 @@ void calculate() {
         case '/':
             // check for division by zero
             if(op2 == 0) {
-                printf(" - Error: division by zero\n");
+                error = true;
+                printf(" - ERROR division by zero\n"); 
+                break;
             } else {
-                printf("%2f\n", op1 / op2);
+                printf("%2f\n", op1 / op2); 
+                break;
             }
         case '^': printf("%2f\n", pow(op1, op2)); break;
     }
 }
-#line 496 "lex.yy.c"
-#line 497 "lex.yy.c"
+#line 502 "lex.yy.c"
+#line 503 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -711,10 +717,10 @@ YY_DECL
 		}
 
 	{
-#line 64 "tiny_calc.l"
+#line 69 "tiny_calc.l"
 
 
-#line 717 "lex.yy.c"
+#line 723 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -773,24 +779,25 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 66 "tiny_calc.l"
+#line 71 "tiny_calc.l"
 {
+    // check if state is op1
     if(state == 0) {
         op1 = atof(yytext);
         state = 1;
         printf("%.2f ", op1);
-    } else if(state == 2) {
+    } else if(state == 2) { // check if state is op
         op2 = atof(yytext);
         state = 3;
         printf("%.2f", op2);
-    } else {
+    } else { // check if state is op2
         printf("%s", yytext);
     }
 }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 80 "tiny_calc.l"
+#line 86 "tiny_calc.l"
 {
     if(state == 1) {
         op = '+';
@@ -803,7 +810,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 90 "tiny_calc.l"
+#line 96 "tiny_calc.l"
 {
     if(state == 1) {
         op = '-';
@@ -816,7 +823,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 100 "tiny_calc.l"
+#line 106 "tiny_calc.l"
 {
     if(state == 1) {
         op = '*';
@@ -829,7 +836,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 110 "tiny_calc.l"
+#line 116 "tiny_calc.l"
 {
     if(state == 1) {
         op = '/';
@@ -842,7 +849,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 120 "tiny_calc.l"
+#line 126 "tiny_calc.l"
 {
     if(state == 1) {
         op = '^';
@@ -855,13 +862,13 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 130 "tiny_calc.l"
+#line 136 "tiny_calc.l"
 { } // ignore whitespace
 	YY_BREAK
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 132 "tiny_calc.l"
+#line 138 "tiny_calc.l"
 {
     if(!error) {
         calculate();
@@ -874,10 +881,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 141 "tiny_calc.l"
+#line 147 "tiny_calc.l"
 ECHO;
 	YY_BREAK
-#line 880 "lex.yy.c"
+#line 887 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1882,7 +1889,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 141 "tiny_calc.l"
+#line 147 "tiny_calc.l"
 
 
 int yywrap() { return 1; }

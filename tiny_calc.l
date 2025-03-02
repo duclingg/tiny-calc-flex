@@ -8,26 +8,29 @@
 state 0: expects op1
 1: expects op
 2: expects op2
-3: 
+3: expects state 2
 */
 
 double op1 = 0.0;
 double op2 = 0.0;
 char op = '\0';
 int state = 0;
-int error = 0;
+bool error = false;
 
+// resets varaibles after calulation or error
 void reset() {
     op1 = 0.0;
     op2 = 0.0;
     op = '\0';
     state = 0;
-    error = 0;
+    error = false;
 }
 
+// basic operations
 void calculate() {
     if (state != 3) {
         printf(" - ERROR in the expression\n");
+        error = true;
         return;
     }
 
@@ -39,16 +42,19 @@ void calculate() {
         case '/':
             // check for division by zero
             if(op2 == 0) {
-                printf(" - ERROR division by zero\n");
+                error = true;
+                printf(" - ERROR division by zero\n"); 
+                break;
             } else {
-                printf("%2f\n", op1 / op2);
+                printf("%2f\n", op1 / op2); 
+                break;
             }
         case '^': printf("%2f\n", pow(op1, op2)); break;
     }
 }
 %}
 
-letter [a-zA-Z]
+
 digit [0-9]+|([0-9]*)"."([0-9]+)
 add "+"
 sub "-"
@@ -56,7 +62,6 @@ mul "*"
 div "/"
 pow "^"
 
-id {letter}({letter}|[0-9]|"_")*
 ws [ \t]+
 nl \n
 
@@ -64,15 +69,16 @@ nl \n
 %%
 
 {digit} {
+    // check if state is op1
     if(state == 0) {
         op1 = atof(yytext);
         state = 1;
         printf("%.2f ", op1);
-    } else if(state == 2) {
+    } else if(state == 2) { // check if state is op
         op2 = atof(yytext);
         state = 3;
         printf("%.2f", op2);
-    } else {
+    } else { // check if state is op2
         printf("%s", yytext);
     }
 }
