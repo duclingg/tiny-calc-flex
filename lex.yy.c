@@ -455,7 +455,7 @@ char *yytext;
 state 0: expects op1
 1: expects op
 2: expects op2
-3: expects state 2
+3: ready to calulate
 */
 
 double op1 = 0.0;
