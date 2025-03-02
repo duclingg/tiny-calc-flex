@@ -24,6 +24,7 @@ The calculator accepts binary artimetic expressions entered by the user (one exp
     - Use of letters (invalid operands or operators)
 
 ### How it works
+A little more in depth on the structure used to create.
 The calculator parses the user input for digits and letters (regex), specific operators allowed, as well as whitespaces and newlines. 
 
 ```
@@ -39,7 +40,7 @@ nl \n
 ```
 - `nl` Newline: calls `calulate()` if error free.
 
-Each user input is held in memory by a `double` variable `op1`, `op2`, or `op`. It parses the data from the defined varaibles above to determine which if each character in the input matches the corresponding type. Each input is also tracked by a state: 0, 1, 2, or 3.
+Each user input is held in memory by a `double` variable `op1`, `op2`, or `op`. It parses the data from the defined varaibles above to determine which if each character in the input matches the corresponding type. Each input is also tracked by a state:
 - State 0: Expects operand 1
 - State 1: Expects an operator
 - State 2: Expects operand 2
@@ -69,7 +70,7 @@ The digit rule will check if it is a digit, int or double. If accepted from the 
 
 Each operator `op` has it's own rule from the predefined operator types above. It will change the state based on it the rule it met or not, similar to the `digit` rule.
 
-The `calculate()` function also checks for the correct state (state 3) otherwise it will throw an error. It also checks for divion by zero edge case.
+The `calculate()` function checks for the correct state (state 3) otherwise it will throw an error. It also checks for divion by zero edge case.
 ```
 void calculate() {
     if (state != 3) {
