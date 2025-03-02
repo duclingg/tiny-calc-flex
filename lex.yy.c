@@ -352,8 +352,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 1
-#define YY_END_OF_BUFFER 2
+#define YY_NUM_RULES 9
+#define YY_END_OF_BUFFER 10
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -361,23 +361,24 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static const flex_int16_t yy_accept[6] =
+static const flex_int16_t yy_accept[19] =
     {   0,
-        0,    0,    2,    1,    0
+        0,    0,   10,    9,    7,    8,    4,    2,    3,    9,
+        5,    1,    6,    7,    1,    0,    1,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
     {   0,
+        1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    2,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    4,    5,    1,    6,    7,    8,    9,    9,    9,
+        9,    9,    9,    9,    9,    9,    9,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,   10,    1,    1,    1,    1,    1,    1,
 
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -398,29 +399,35 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static const YY_CHAR yy_meta[2] =
+static const YY_CHAR yy_meta[11] =
     {   0,
-        1
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1
     } ;
 
-static const flex_int16_t yy_base[7] =
+static const flex_int16_t yy_base[19] =
     {   0,
-        0,    0,    2,    3,    3,    0
+        0,    0,   18,   19,   15,   19,   19,   19,   19,    7,
+       19,    4,   19,   13,    5,    3,    0,   19
     } ;
 
-static const flex_int16_t yy_def[7] =
+static const flex_int16_t yy_def[19] =
     {   0,
-        6,    6,    5,    5,    0,    5
+       18,    1,   18,   18,   18,   18,   18,   18,   18,   18,
+       18,   18,   18,   18,   18,   18,   12,    0
     } ;
 
-static const flex_int16_t yy_nxt[5] =
+static const flex_int16_t yy_nxt[30] =
     {   0,
-        4,    5,    3,    5
+        4,    5,    6,    7,    8,    9,   10,   11,   12,   13,
+       16,   15,   17,   15,   14,   15,   14,   18,    3,   18,
+       18,   18,   18,   18,   18,   18,   18,   18,   18
     } ;
 
-static const flex_int16_t yy_chk[5] =
+static const flex_int16_t yy_chk[30] =
     {   0,
-        6,    3,    5,    5
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+       12,   16,   12,   15,   14,   10,    5,    3,   18,   18,
+       18,   18,   18,   18,   18,   18,   18,   18,   18
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -448,6 +455,7 @@ char *yytext;
 state 0: expects op1
 1: expects op
 2: expects op2
+3: 
 */
 
 double op1 = 0.0;
@@ -455,7 +463,6 @@ double op2 = 0.0;
 char op = '\0';
 int state = 0;
 int error = 0;
-char error_msg[100] = "";
 
 void reset() {
     op1 = 0.0;
@@ -463,12 +470,11 @@ void reset() {
     op = '\0';
     state = 0;
     error = 0;
-    error_msg[0] = '\0';
 }
 
 void calculate() {
     if (state != 3) {
-        printf("Error: in the expression\n");
+        printf(" - Error: in the expression\n");
         return;
     }
 
@@ -480,15 +486,15 @@ void calculate() {
         case '/':
             // check for division by zero
             if(op2 == 0) {
-                printf("Error: division by zero\n");
+                printf(" - Error: division by zero\n");
             } else {
                 printf("%2f\n", op1 / op2);
             }
         case '^': printf("%2f\n", pow(op1, op2)); break;
     }
 }
-#line 490 "lex.yy.c"
-#line 491 "lex.yy.c"
+#line 496 "lex.yy.c"
+#line 497 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -708,7 +714,7 @@ YY_DECL
 #line 64 "tiny_calc.l"
 
 
-#line 711 "lex.yy.c"
+#line 717 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -735,13 +741,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 6 )
+				if ( yy_current_state >= 19 )
 					yy_c = yy_meta[yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 3 );
+		while ( yy_base[yy_current_state] != 19 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -768,9 +774,110 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 66 "tiny_calc.l"
+{
+    if(state == 0) {
+        op1 = atof(yytext);
+        state = 1;
+        printf("%.2f ", op1);
+    } else if(state == 2) {
+        op2 = atof(yytext);
+        state = 3;
+        printf("%.2f", op2);
+    } else {
+        printf("%s", yytext);
+    }
+}
+	YY_BREAK
+case 2:
+YY_RULE_SETUP
+#line 80 "tiny_calc.l"
+{
+    if(state == 1) {
+        op = '+';
+        state = 2;
+        printf("+ ");
+    } else {
+        printf("%s", yytext);
+    }
+}
+	YY_BREAK
+case 3:
+YY_RULE_SETUP
+#line 90 "tiny_calc.l"
+{
+    if(state == 1) {
+        op = '-';
+        state = 2;
+        printf("- ");
+    } else {
+        printf("%s", yytext);
+    }
+}
+	YY_BREAK
+case 4:
+YY_RULE_SETUP
+#line 100 "tiny_calc.l"
+{
+    if(state == 1) {
+        op = '*';
+        state = 2;
+        printf("* ");
+    } else {
+        printf("%s", yytext);
+    }
+}
+	YY_BREAK
+case 5:
+YY_RULE_SETUP
+#line 110 "tiny_calc.l"
+{
+    if(state == 1) {
+        op = '/';
+        state = 2;
+        printf("/ ");
+    } else {
+        printf("%s", yytext);
+    }
+}
+	YY_BREAK
+case 6:
+YY_RULE_SETUP
+#line 120 "tiny_calc.l"
+{
+    if(state == 1) {
+        op = '^';
+        state = 2;
+        printf("^ ");
+    } else {
+        printf("%s", yytext);
+    }
+}
+	YY_BREAK
+case 7:
+YY_RULE_SETUP
+#line 130 "tiny_calc.l"
+{ } // ignore whitespace
+	YY_BREAK
+case 8:
+/* rule 8 can match eol */
+YY_RULE_SETUP
+#line 132 "tiny_calc.l"
+{
+    if(!error) {
+        calculate();
+    } else {
+        printf("\n");
+    }
+    reset();
+    printf(">> ");
+}
+	YY_BREAK
+case 9:
+YY_RULE_SETUP
+#line 141 "tiny_calc.l"
 ECHO;
 	YY_BREAK
-#line 773 "lex.yy.c"
+#line 880 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1067,7 +1174,7 @@ static int yy_get_next_buffer (void)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 6 )
+			if ( yy_current_state >= 19 )
 				yy_c = yy_meta[yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
@@ -1095,11 +1202,11 @@ static int yy_get_next_buffer (void)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 6 )
+		if ( yy_current_state >= 19 )
 			yy_c = yy_meta[yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
-	yy_is_jam = (yy_current_state == 5);
+	yy_is_jam = (yy_current_state == 18);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }
@@ -1775,11 +1882,13 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 66 "tiny_calc.l"
+#line 141 "tiny_calc.l"
 
 
 int yywrap() { return 1; }
 
 int main(int argv, char *argc[]) {
+    printf(">> ");
     yylex();
+    return 0;
 }
